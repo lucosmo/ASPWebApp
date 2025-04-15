@@ -1,0 +1,50 @@
+﻿@model IEnumerable<ASPWebApp.Models.Article>
+
+@{
+    ViewData["Title"] = "Search";
+    var query = ViewData["Query"] as string;
+}
+
+<h1>Search Articles</h1>
+
+<form asp-action="Search" method="get" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="query" class="form-control" placeholder="Search in article body..." value="@query" />
+        <button class="btn btn-primary" type="submit">Search</button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <p>No matching articles found.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Body</th>
+                <th>Author</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var article in Model)
+            {
+                <tr>
+                    <td>@article.Id</td>
+                    <td>@article.Title</td>
+                    <td>@article.Body</td>
+                    <td>@article.Author?.Name</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@article.Id" class="btn btn-sm btn-info">Details</a>
+                        <a asp-action="Edit" asp-route-id="@article.Id" class="btn btn-sm btn-warning">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@article.Id" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
