@@ -1,4 +1,5 @@
 using ASPWebApp.Data;
+using ASPWebApp.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASPWebApp
@@ -14,7 +15,7 @@ namespace ASPWebApp
 
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+            builder.Services.AddScoped<IImageService, ImageSharpService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

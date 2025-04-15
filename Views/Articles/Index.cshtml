@@ -37,7 +37,7 @@
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Body)
+                    @((item.Body?.Length > 100 ? item.Body.Substring(0, 100) + "..." : item.Body))
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Author.Name)

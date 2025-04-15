@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Image Details";
+    var fileName = ViewBag.FileName as string;
+}
+
+<h2>Image Details</h2>
+
+@if (!string.IsNullOrEmpty(fileName))
+{
+    <p><strong>File Name:</strong> @fileName</p>
+
+    <h3>Preview</h3>
+
+    <p>Original:</p>
+    <img src="@Url.Action("ViewImage", "Images", new { fileName })" />
+
+    <h3>Available Modifications:</h3>
+    <ul>
+        <li>
+            <a href="@Url.Action("Grayscale", "Images", new { fileName })" target="_blank">Apply Grayscale</a>
+        </li>
+        <li>
+            <a href="@Url.Action("Resize", "Images", new { fileName, width = 256, height = 256 })" target="_blank">Resize (256x256)</a>
+        </li>
+        <li>
+            <a href="@Url.Action("Crop", "Images", new { fileName, x = 100, y = 100, width = 200, height = 200 })" target="_blank">Crop (200x200 from 100,100)</a>
+        </li>
+    </ul>
+
+    <hr />
+
+    <form asp-action="Delete" method="post" style="margin-top:20px;">
+        <input type="hidden" name="fileName" value="@fileName" />
+        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this image?');">Delete Image</button>
+    </form>
+}
+else
+{
+    <p>No image selected.</p>
+}
+
+@if (TempData["Message"] != null)
+{
+    <div style="margin-top:20px; color: green;">
+        <strong>@TempData["Message"]</strong>
+    </div>
+}

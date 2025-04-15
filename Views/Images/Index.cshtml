@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Upload Image";
+}
+
+<h2>Upload Image</h2>
+
+<form asp-action="Upload" method="post" enctype="multipart/form-data">
+    <div>
+        <label for="file">Choose image:</label><br />
+        <input type="file" name="file" required />
+    </div>
+    <br />
+    <button type="submit">Upload</button>
+</form>
+
+@if (TempData["Message"] != null)
+{
+    <div style="margin-top:20px; color: green;">
+        <strong>@TempData["Message"]</strong>
+    </div>
+}
