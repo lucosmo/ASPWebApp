@@ -1,6 +1,7 @@
 using ASPWebApp.Data;
 using ASPWebApp.Services;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace ASPWebApp
 {
@@ -8,7 +9,15 @@ namespace ASPWebApp
     {
         public static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Host.UseSerilog();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();

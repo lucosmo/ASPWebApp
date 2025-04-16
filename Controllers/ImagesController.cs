@@ -24,12 +24,16 @@ namespace ASPWebApp.Controllers
         {
             if (file == null || file.Length == 0)
             {
+                _logger.LogWarning("Upload attempted with no file or empty file.");
                 TempData["Message"] = "Image wasn't uploaded.";
                 return RedirectToAction("Index");
             }
 
             var result = await _imageService.SaveImageAsync(file);
             TempData["Message"] = "Image saved as: " + result.FileName;
+
+            _logger.LogInformation("Image '{FileName}' uploaded successfully.", result.FileName);
+
             return RedirectToAction("Details", new { fileName = result.FileName });
         }
 
@@ -47,19 +51,25 @@ namespace ASPWebApp.Controllers
 
         public async Task<IActionResult> Grayscale(string fileName)
         {
+            _logger.LogDebug("Grayscale filter requested for file: {FileName}", fileName);
             var image = await _imageService.ApplyGrayscaleAsync(fileName);
+            _logger.LogInformation("Grayscale applied to file: {FileName}", fileName);
             return File(image, "image/png");
         }
 
         public async Task<IActionResult> Resize(string fileName, int width = 512, int height = 512)
         {
+            _logger.LogDebug("Resize requested for file: {FileName}", fileName);
             var image = await _imageService.ResizeImageAsync(fileName, width, height);
+            _logger.LogInformation("Image resized for file: {FileName}", fileName);
             return File(image, "image/png");
         }
 
         public async Task<IActionResult> Crop(string fileName, int x = 100, int y = 100, int width = 300, int height = 300)
         {
+            _logger.LogDebug("Crop requested for file: {FileName}", fileName);
             var image = await _imageService.CropImageAsync(fileName, x, y, width, height);
+            _logger.LogInformation("Image cropped for file: {FileName}", fileName);
             return File(image, "image/png");
         }
 
@@ -79,8 +89,12 @@ namespace ASPWebApp.Controllers
             int cropWidth = 300,
             int cropHeight = 300)
         {
+            _logger.LogDebug("Multimodification requested for file: {FileName}", file.Name);
+
             if (file == null || file.Length == 0)
             {
+                _logger.LogError("Multimodification requested for file: {FileName}, but File wasn't uploaded.", file?.Name);
+
                 TempData["Message"] = "File wasn't uploaded.";
                 return RedirectToAction("MultiModifications");
             }
@@ -88,10 +102,12 @@ namespace ASPWebApp.Controllers
             try
             {
                 var result = await _imageService.MultiModificationsImageAsync(file, width, height, x, y, cropWidth, cropHeight);
+                _logger.LogInformation("Multimodification applied to file: {FileName}", file.Name);
                 return File(result, "image/png");
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error during multi image modifications for file: {FileName}", file?.FileName);
                 TempData["Message"] = "Error: " + ex.Message;
                 return RedirectToAction("MultiModifications");
             }
@@ -99,8 +115,10 @@ namespace ASPWebApp.Controllers
 
         public async Task<IActionResult> Delete(string fileName)
         {
+            _logger.LogInformation("Delete requested for file: {FileName}", fileName);
             await _imageService.DeleteImageAsync(fileName);
             TempData["Message"] = "File deleted.";
+            _logger.LogInformation("File '{FileName}' deleted successfully.", fileName);
             return RedirectToAction("Index");
         }
     }
