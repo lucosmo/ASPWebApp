@@ -89,11 +89,11 @@ namespace ASPWebApp.Controllers
             int cropWidth = 300,
             int cropHeight = 300)
         {
-            _logger.LogDebug("Multimodification requested for file: {FileName}", file.Name);
+            _logger.LogDebug("Multimodification requested for file: {FileName}", file.FileName);
 
             if (file == null || file.Length == 0)
             {
-                _logger.LogError("Multimodification requested for file: {FileName}, but File wasn't uploaded.", file?.Name);
+                _logger.LogError("Multimodification requested for file: {FileName}, but File wasn't uploaded.", file?.FileName);
 
                 TempData["Message"] = "File wasn't uploaded.";
                 return RedirectToAction("MultiModifications");
@@ -102,7 +102,7 @@ namespace ASPWebApp.Controllers
             try
             {
                 var result = await _imageService.MultiModificationsImageAsync(file, width, height, x, y, cropWidth, cropHeight);
-                _logger.LogInformation("Multimodification applied to file: {FileName}", file.Name);
+                _logger.LogInformation("Multimodification applied to file: {FileName}", file.FileName);
                 return File(result, "image/png");
             }
             catch (Exception ex)
