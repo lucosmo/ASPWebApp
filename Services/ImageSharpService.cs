@@ -87,7 +87,13 @@ namespace ASPWebApp.Services
 
             using (var image = await Image.LoadAsync(filePath))
             {
-                var cropRectangle = new Rectangle(x, y, width, height);
+                int maxWidth = image.Width - x;
+                int maxHeight = image.Height - y;
+
+                int finalWidth = Math.Min(width, maxWidth);
+                int finalHeight = Math.Min(height, maxHeight);
+
+                var cropRectangle = new Rectangle(x, y, finalWidth, finalHeight);
                 image.Mutate(x => x.Crop(cropRectangle));
 
                 var newFilePath = Path.Combine(_imageDirectory, $"cropped_{fileName}");
