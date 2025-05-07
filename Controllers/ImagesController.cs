@@ -14,12 +14,13 @@ namespace ASPWebApp.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
 
-        [HttpPost]
+        [HttpPost("Upload")]
         public async Task<IActionResult> Upload(IFormFile file)
         {
             if (file == null || file.Length == 0)
@@ -35,6 +36,32 @@ namespace ASPWebApp.Controllers
             _logger.LogInformation("Image '{FileName}' uploaded successfully.", result.FileName);
 
             return RedirectToAction("Details", new { fileName = result.FileName });
+        }
+
+        [HttpPost("Images")]
+        public async Task<IActionResult> SaveToImagesAfter()
+        {
+            var file = Request.Form.Files.FirstOrDefault();
+
+            if (file == null || file.Length == 0)
+            {
+                _logger.LogWarning("Upload failed — no file in Request.Form.Files.");
+                return BadRequest("No file uploaded.");
+            }
+
+            
+            var folder = Path.Combine(Directory.GetCurrentDirectory(), "Images_after");
+            Directory.CreateDirectory(folder);
+
+            var filePath = Path.Combine(folder, file.FileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            _logger.LogInformation("Uploaded file saved to images_after: {FilePath}", filePath);
+            return Ok(new { fileName = file.FileName, savedTo = "Images_after/" });
         }
 
         public async Task<IActionResult> Details(string fileName)
