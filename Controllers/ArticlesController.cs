@@ -63,7 +63,7 @@ namespace ASPWebApp.Controllers
 
         // POST: Articles/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,Body,UserId")] Article article)
         {
             if (ModelState.IsValid)
@@ -102,7 +102,7 @@ namespace ASPWebApp.Controllers
 
         // POST: Articles/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Body,UserId")] Article article)
         {
             if (id != article.Id)
@@ -165,7 +165,7 @@ namespace ASPWebApp.Controllers
 
         // POST: Articles/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var article = await _context.Articles.FindAsync(id);
